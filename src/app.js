@@ -89,6 +89,13 @@ const cronStart = async () => {
         initMessage()
     }, optionsCron);
 
+    consoleMessage(`📆 Cron every day 02:00 PM ...`, 'greenBright')
+
+    cron.schedule(`0 14 * * *`, () => {
+        initMessage()
+    }, optionsCron);
+
+
     consoleMessage(`📆 Cron every day 06:00 PM ...`, 'greenBright')
 
     cron.schedule(`0 18 * * *`, () => {
