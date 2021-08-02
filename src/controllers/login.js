@@ -120,7 +120,7 @@ const singlePost = async ({ page, data }, prevBlocked = true, groupData = false)
         const message = data;
         const group = !groupData ? await getGroup(data) : groupData;
         const { fbGroupMobile } = group;
-        const checkRegister = await checkLog({ idGroup: group.idGroup })
+        const checkRegister = await checkLog({ idGroup: group.idGroup, message: group.message })
         consoleMessage(`Check GAP Time ${checkRegister}`, 'yellow')
         if (!checkRegister) return true;
 
