@@ -207,7 +207,8 @@ const singlePost = async ({ page, data }, prevBlocked = true, groupData = false)
             }, mentionBtn);
         }
 
-        await page.keyboard.type(' ' + message.messagesGlobal + ' ' + message.messagesLink, { delay: 120 });
+        await page.keyboard.type(' ' + message.messagesGlobal + ' ', { delay: 120 });
+        await page.keyboard.type(message.messagesLink);
         await page.waitForTimeout(2500)
         await page.waitForXPath(layoutText)
         await page.evaluate((el) => {
