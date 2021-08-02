@@ -32,7 +32,10 @@ const checkLog = async ({ idGroup, message }) => {
     try {
         const now = moment()
         const gapMin = parseInt(process.env.GAP_MINUTES || 5);
-        const check = await groupLogModel.findOne({ idGroup, message })
+        const check = await groupLogModel.findOne({ idGroup })
+        consoleMessage(`Check Log: ${check}`, 'yellow')
+        if (!check) return true;
+        if (check.message === message) return false;
         const lastDate = now.diff(moment(check.lastInteractionAt), 'minutes');
         consoleMessage(`Check GAP Time ${lastDate} >= ${gapMin}`, 'yellow')
         return (lastDate >= gapMin)
