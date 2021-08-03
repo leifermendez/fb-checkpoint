@@ -28,14 +28,15 @@ const getGroup = async (message) => {
     }
 }
 
-const checkLog = async ({ idGroup, message }) => {
+const checkLog = async ({ idGroup, message }) => { //138906596809905
     try {
         const now = moment()
         const gapMin = parseInt(process.env.GAP_MINUTES || 5);
-        const check = await groupLogModel.findOne({ idGroup })
+        const checkMessage = await groupLogModel.findOne({ message })
+        if (checkMessage) return false;
+        const [check] = await groupLogModel.find({ idGroup }, null, { sort: { lastInteractionAt: -1 }, limit: 1 })
         consoleMessage(`Check Log: ${check}`, 'yellow')
-        if (!check) return true;
-        if (check.message === message) return false;
+        if (!check) return false;
         const lastDate = now.diff(moment(check.lastInteractionAt), 'minutes');
         consoleMessage(`Check GAP Time ${lastDate} >= ${gapMin}`, 'yellow')
         return (lastDate >= gapMin)
@@ -58,4 +59,9 @@ const getAll = async () => {
     return list
 }
 
-module.exports = { getGroup, saveLog, checkLog, getAll }
+const testCheckLog = async (idGroup) => {
+    const check = await groupLogModel.findOne({ message: '👉aa TURBO Cache para tu Aplicacion de NODE' })
+    console.log(check)
+}
+
+module.exports = { getGroup, saveLog, checkLog, getAll, testCheckLog }
