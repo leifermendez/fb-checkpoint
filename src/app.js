@@ -9,7 +9,6 @@ const { consoleMessage } = require('./helpers/console')
 const { puppeterConfig } = require('../config/config')
 const { postGroup } = require('./controllers/login')
 const listMessages = require('./controllers/excel')
-const { testCheckLog } = require('./controllers/groups')
 const moment = require('moment')
 
 
@@ -114,7 +113,6 @@ const cronStart = async () => {
     }, optionsCron);
 }
 
-// testCheckLog('138906596809905')
 cronStart()
 dbConnect()
 

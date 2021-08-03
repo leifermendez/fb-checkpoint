@@ -18,8 +18,6 @@ const getGroup = async (message) => {
             }
         )
 
-        console.log(resDetail)
-
         resDetail.lastInteractionAt = Date.now()
         resDetail.save()
         return resDetail
@@ -64,4 +62,17 @@ const testCheckLog = async (idGroup) => {
     console.log(check)
 }
 
-module.exports = { getGroup, saveLog, checkLog, getAll, testCheckLog }
+const testGetGroup = async (tag = []) => {
+    const resDetail = await groupModel.findOne(
+        {
+            tag: { $in: tag.split(',') }
+        },
+        null,
+        {
+            sort: { lastInteractionAt: 1 }
+        }
+    )
+    console.log(resDetail)
+}
+
+module.exports = { getGroup, saveLog, checkLog, getAll, testCheckLog, testGetGroup }
