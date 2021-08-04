@@ -7,8 +7,7 @@ puppeteer.use(StealthPlugin())
 const cron = require('node-cron')
 const { consoleMessage } = require('./helpers/console')
 const { puppeterConfig } = require('../config/config')
-const { postGroup } = require('./controllers/login')
-const listMessages = require('./controllers/excel')
+const { checkFb } = require('./controllers/login')
 const moment = require('moment')
 
 
@@ -17,7 +16,7 @@ const moment = require('moment')
  */
 
 
-const initAll = async (messages = []) => {
+const initCheck = async () => {
 
     const cluster = await Cluster.launch({
         concurrency: Cluster.CONCURRENCY_CONTEXT,
@@ -28,51 +27,20 @@ const initAll = async (messages = []) => {
     });
 
 
-    const cycleNumber = [...Array.from(Array(parseInt(process.env.POST_NUMBER)).keys())]
-
-    messages.forEach(message => {
-
-        //TODO: Revisamos la cantidad de mensajes para hoy
-        //TODO: Publicamos X numero de  grupos
-
-        cycleNumber.forEach(() => {
-            cluster.queue(message, postGroup);
-        })
-
-    })
-
+    cluster.queue({}, checkFb);
     await cluster.idle();
     await cluster.close();
 
 
 }
 
-const initMessage = () => {
-    listMessages((messages) => {
-        messages = messages.filter(a => (a))
-        messages = messages.map(([messagesGlobal, messagesLink, tag, date]) => {
-            const today = moment()
-            const checkDate = today.diff(moment(date, 'DD/MM/YYYY'), 'hours')
-            console.log(checkDate)
-            if (checkDate < 24 && checkDate > 0) {
-                return {
-                    messagesGlobal,
-                    messagesLink,
-                    tag
-                }
-            }
-
-        })
-        messages = messages.filter(a => (a))
-        initAll(messages)
-    })
-}
 
 const cronStart = async () => {
     const now = moment().format('DD/MM/YYYY hh:mm')
     const timezone = process.env.TIMEZONE || "Europe/Madrid"
+    const minutes = process.env.MINUTES || 59
 
-    consoleMessage(`Remember google crendentials`, 'cyan')
+    consoleMessage(`Check fb security`, 'cyan')
     consoleMessage(`Timezone: ${timezone}`, 'cyan')
     consoleMessage(`Hour: ${now}`, 'cyan')
 
@@ -81,37 +49,14 @@ const cronStart = async () => {
         timezone
     }
 
-    consoleMessage(`📆 Cron every day 10:00 AM ...`, 'greenBright')
+    consoleMessage(`📆 Cron every ${minutes} minutes ...`, 'greenBright')
 
-    cron.schedule(`0 10 * * *`, () => {
-        initMessage()
+    cron.schedule(`*/${minutes} * * * *`, () => {
+        initCheck()
     }, optionsCron);
 
-    consoleMessage(`📆 Cron every day 02:00 PM ...`, 'greenBright')
-
-    cron.schedule(`0 14 * * *`, () => {
-        initMessage()
-    }, optionsCron);
-
-
-    consoleMessage(`📆 Cron every day 06:00 PM ...`, 'greenBright')
-
-    cron.schedule(`0 18 * * *`, () => {
-        initMessage()
-    }, optionsCron);
-
-    consoleMessage(`📆 Cron every day 08:00 PM ...`, 'greenBright')
-
-    cron.schedule(`0 20 * * *`, () => {
-        initMessage()
-    }, optionsCron);
-
-    consoleMessage(`📆 Cron every day 10:00 PM ...`, 'greenBright')
-
-    cron.schedule(`0 22 * * *`, () => {
-        initMessage()
-    }, optionsCron);
 }
+
 
 cronStart()
 dbConnect()
