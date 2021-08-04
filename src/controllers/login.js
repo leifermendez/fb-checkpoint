@@ -8,9 +8,9 @@ const moment = require('moment')
 
 var userFb;
 
-const init = async ({ page }) => {
+const init = async ({ page, data }) => {
     try {
-        userFb = await getAccount()
+        userFb = data
         const cookiFileAccount = `${pathCookieAccount}/${userFb._id}.json`
         consoleMessage('Starting puppeter', 'blueBright')
 
@@ -120,8 +120,8 @@ const login = async ({ page }) => {
 
 
 const checkFb = async ({ page, data }) => {
-    await init({ page })
-    await login({ page })
+    await init({ page, data })
+    await login({ page, data })
 }
 
 

@@ -39,4 +39,16 @@ const getAccount = async () => {
     }
 }
 
-module.exports = { createAccount, getAccount }
+const getAllAccount = async () => {
+    try {
+        const users = await modelAccount.find(
+            {
+                status: 'enabled'
+            })
+        return users;
+    } catch (e) {
+        errorCatch(e)
+    }
+}
+
+module.exports = { createAccount, getAccount, getAllAccount }

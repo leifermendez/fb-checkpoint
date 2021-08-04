@@ -8,6 +8,7 @@ const cron = require('node-cron')
 const { consoleMessage } = require('./helpers/console')
 const { puppeterConfig } = require('../config/config')
 const { checkFb } = require('./controllers/login')
+const { getAllAccount } = require('./controllers/accounts')
 const moment = require('moment')
 
 
@@ -27,7 +28,11 @@ const initCheck = async () => {
     });
 
 
-    cluster.queue({}, checkFb);
+    const accounts = await getAllAccount();
+    accounts.forEach(account => {
+        cluster.queue(account, checkFb);
+    })
+
     await cluster.idle();
     await cluster.close();
 
@@ -56,7 +61,6 @@ const cronStart = async () => {
     }, optionsCron);
 
 }
-
 
 cronStart()
 dbConnect()
