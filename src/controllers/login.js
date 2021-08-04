@@ -1,10 +1,8 @@
 const pathCookieAccount = `${__dirname}/../../tmp`
 const { url, layout } = require('../../config/config')
 const { consoleMessage } = require('../helpers/console')
-const { getAccount } = require('./accounts')
-const { getGroup, saveLog, checkLog } = require('./groups')
+const { sendNoty } = require('../helpers/notification')
 const fs = require('fs')
-const moment = require('moment')
 
 var userFb;
 
@@ -110,6 +108,7 @@ const login = async ({ page }) => {
         await page.waitForXPath(layoutBlocked)
         const btnBlocked = (await page.$x(layoutBlocked))[0];
         if (btnBlocked) {
+            sendNoty({ title: `✖ Error ${userFb.email}`, message: `IMPORTANT! Need action by user blocked`, type: 'error' })
             consoleMessage(`IMPORTANT! Need action by user blocked`, 'magentaBright')
         }
     } catch (e) {
