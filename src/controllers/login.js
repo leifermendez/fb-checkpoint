@@ -1,6 +1,7 @@
 const pathCookieAccount = `${__dirname}/../../tmp`
 const { url, layout } = require('../../config/config')
 const { consoleMessage } = require('../helpers/console')
+const { errorCatch } = require('../helpers/errorHandle')
 const { sendNoty } = require('../helpers/notification')
 const fs = require('fs')
 
@@ -96,6 +97,7 @@ const login = async ({ page }) => {
         fs.writeFileSync(cookiFileAccount, JSON.stringify(cookies, null, 2));
         consoleMessage('New cookie valid', 'yellow')
     } catch (e) {
+        errorCatch(null, `SUSPICIOS_BLOCKED_${userFb.email}`)
         consoleMessage('Suspicious blocked', 'yellow')
     }
 
@@ -109,6 +111,7 @@ const login = async ({ page }) => {
         const btnBlocked = (await page.$x(layoutBlocked))[0];
         if (btnBlocked) {
             sendNoty({ title: `✖ Error ${userFb.email}`, message: `IMPORTANT! Need action by user blocked`, type: 'error' })
+            errorCatch(null, `USER_BLOCKED_${userFb.email}`)
             consoleMessage(`IMPORTANT! Need action by user blocked`, 'magentaBright')
         }
     } catch (e) {
