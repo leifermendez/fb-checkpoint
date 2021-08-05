@@ -62,6 +62,10 @@ const cronStart = async () => {
 
 }
 
+if (process.env.MODE === 'force') {
+    initCheck()
+}
+
 cronStart()
 dbConnect()
 

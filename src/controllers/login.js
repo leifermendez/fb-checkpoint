@@ -51,8 +51,8 @@ const login = async ({ page }) => {
     try {
         consoleMessage('Starting new login', 'yellow')
         await page.goto(url);
-        await page.waitForXPath('//a[@data-cookiebanner="accept_button"]');
-        const acceptCookiesButton = (await page.$x('//a[@data-cookiebanner="accept_button"]'))[0];
+        await page.waitForXPath('//*[@data-cookiebanner="accept_button"]');
+        const acceptCookiesButton = (await page.$x('//*[@data-cookiebanner="accept_button"]'))[0];
         await page.evaluate((el) => {
             el.focus();
             el.click();
